@@ -24,6 +24,8 @@ struct Miner {
     pub keypair_filepath: Option<String>,
     pub priority_fee: u64,
     pub cluster: String,
+    pub block_engine_url: String,
+    pub block_engine_auth_keypair: String,
 }
 
 #[derive(Parser, Debug)]
@@ -36,6 +38,20 @@ struct Args {
         global = true
     )]
     rpc: Option<String>,
+
+    #[arg(
+        long,
+        value_name = "BLOCK_ENGINE_URL",
+        help = "URL of the block engine",
+    )]
+    block_engine_url: String,
+
+    #[arg(
+        long,
+        value_name = "BLOCK_ENGINE_AUTH_KEYPAIR",
+        help = "Keypair of the block engine",
+    )]
+    block_engine_auth_keypair: String,
 
     #[clap(
         global = true,
@@ -193,6 +209,8 @@ async fn main() {
         cluster.clone(),
         args.priority_fee,
         Some(default_keypair),
+        args.block_engine_url.clone(),
+        args.block_engine_auth_keypair.clone(),
     ));
 
     // Execute user command.
@@ -231,11 +249,13 @@ async fn main() {
 }
 
 impl Miner {
-    pub fn new(cluster: String, priority_fee: u64, keypair_filepath: Option<String>) -> Self {
+    pub fn new(cluster: String, priority_fee: u64, keypair_filepath: Option<String>, block_engine_url: String, block_engine_auth_keypair: String) -> Self {
         Self {
             keypair_filepath,
             priority_fee,
             cluster,
+            block_engine_url,
+            block_engine_auth_keypair,
         }
     }
 
